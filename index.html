@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Water Monitoring Dashboard</title>
+</head>
+<body>
+<h1>Water Monitoring Dashboard</h1>
+<button onclick="fetchData()">Load Data</button>
+<pre id="output"></pre>
+
+<script>
+function fetchData(){
+ fetch("fetch.php")
+ .then(res=>res.json())
+ .then(data=>{
+   document.getElementById("output").innerText = JSON.stringify(data,null,2);
+ });
+}
+</script>
+</body>
+</html>
