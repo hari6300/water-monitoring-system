@@ -2,20 +2,95 @@
 <html>
 <head>
 <title>Water Monitoring Dashboard</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    background: #f4f6f8;
+}
+
+h1 {
+    color: #2c3e50;
+}
+
+table {
+    margin: auto;
+    border-collapse: collapse;
+    width: 70%;
+    background: white;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+th {
+    background: #3498db;
+    color: white;
+}
+
+.normal { color: green; }
+.high { color: orange; }
+.leak { color: red; }
+
+button {
+    padding: 10px 20px;
+    margin: 20px;
+}
+</style>
+
 </head>
+
 <body>
-<h1>Water Monitoring Dashboard</h1>
-<button onclick="fetchData()">Load Data</button>
-<pre id="output"></pre>
+
+<h1>💧 Water Monitoring Dashboard</h1>
+
+<button onclick="loadData()">Load Data</button>
+
+<table id="table">
+<tr>
+<th>ID</th>
+<th>Device ID</th>
+<th>Water Used</th>
+<th>Status</th>
+</tr>
+</table>
 
 <script>
-function fetchData(){
+function loadData() {
  fetch("fetch.php")
- .then(res=>res.json())
- .then(data=>{
-   document.getElementById("output").innerText = JSON.stringify(data,null,2);
- });
+  .then(res => res.json())
+  .then(data => {
+    let table = document.getElementById("table");
+
+    // Clear old rows
+    table.innerHTML = `
+    <tr>
+      <th>ID</th>
+      <th>Device ID</th>
+      <th>Water Used</th>
+      <th>Status</th>
+    </tr>`;
+
+    data.forEach((item, index) => {
+      let statusClass = "normal";
+
+      if(item.status === "High Usage") statusClass = "high";
+      if(item.status === "Possible Leakage") statusClass = "leak";
+
+      table.innerHTML += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${item.device_id}</td>
+          <td>${item.water_used} L</td>
+          <td class="${statusClass}">${item.status}</td>
+        </tr>`;
+    });
+  });
 }
 </script>
+
 </body>
 </html>
