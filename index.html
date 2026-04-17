@@ -12,9 +12,7 @@ body {
     background: #f4f6f8;
 }
 
-h1 {
-    color: #2c3e50;
-}
+h1 { color: #2c3e50; }
 
 table {
     margin: auto;
@@ -64,7 +62,7 @@ canvas {
 </tr>
 </table>
 
-<canvas id="chart" width="400" height="200"></canvas>
+<canvas id="chart"></canvas>
 
 <script>
 let chart;
@@ -76,7 +74,6 @@ function loadData() {
 
     let table = document.getElementById("table");
 
-    // Reset table
     table.innerHTML = `
     <tr>
       <th>ID</th>
@@ -114,9 +111,7 @@ function drawChart(labels, values) {
 
   let ctx = document.getElementById('chart').getContext('2d');
 
-  if(chart) {
-    chart.destroy();
-  }
+  if(chart) chart.destroy();
 
   chart = new Chart(ctx, {
     type: 'bar',
