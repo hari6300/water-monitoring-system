@@ -3,6 +3,8 @@
 <head>
 <title>Water Monitoring Dashboard</title>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 body {
     font-family: Arial;
@@ -39,6 +41,10 @@ button {
     padding: 10px 20px;
     margin: 20px;
 }
+
+canvas {
+    margin-top: 30px;
+}
 </style>
 
 </head>
@@ -58,14 +64,19 @@ button {
 </tr>
 </table>
 
+<canvas id="chart" width="400" height="200"></canvas>
+
 <script>
+let chart;
+
 function loadData() {
  fetch("fetch.php")
   .then(res => res.json())
   .then(data => {
+
     let table = document.getElementById("table");
 
-    // Clear old rows
+    // Reset table
     table.innerHTML = `
     <tr>
       <th>ID</th>
@@ -74,9 +85,12 @@ function loadData() {
       <th>Status</th>
     </tr>`;
 
-    data.forEach((item, index) => {
-      let statusClass = "normal";
+    let labels = [];
+    let values = [];
 
+    data.forEach((item, index) => {
+
+      let statusClass = "normal";
       if(item.status === "High Usage") statusClass = "high";
       if(item.status === "Possible Leakage") statusClass = "leak";
 
@@ -87,7 +101,32 @@ function loadData() {
           <td>${item.water_used} L</td>
           <td class="${statusClass}">${item.status}</td>
         </tr>`;
+
+      labels.push("Record " + (index+1));
+      values.push(item.water_used);
     });
+
+    drawChart(labels, values);
+  });
+}
+
+function drawChart(labels, values) {
+
+  let ctx = document.getElementById('chart').getContext('2d');
+
+  if(chart) {
+    chart.destroy();
+  }
+
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Water Usage (Liters)',
+        data: values
+      }]
+    }
   });
 }
 </script>
