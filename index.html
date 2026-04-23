@@ -5,6 +5,34 @@
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Styling -->
+  <style>
+    body {
+      font-family: Arial;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 8px 15px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #333;
+      color: white;
+    }
+
+    button {
+      padding: 8px 15px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
@@ -25,55 +53,8 @@
 <h3>Chart</h3>
 <canvas id="chart" width="400" height="200"></canvas>
 
-<script>
-function loadData() {
-  fetch("data.json")
-    .then(res => res.json())
-    .then(data => {
-
-      let table = document.getElementById("table");
-
-      // clear old rows
-      table.innerHTML = `
-        <tr>
-          <th>Device ID</th>
-          <th>Water Used</th>
-          <th>Status</th>
-        </tr>
-      `;
-
-      let labels = [];
-      let values = [];
-
-      data.forEach(item => {
-        // table
-        let row = `<tr>
-          <td>${item.device_id}</td>
-          <td>${item.water_used}</td>
-          <td>${item.status}</td>
-        </tr>`;
-        table.innerHTML += row;
-
-        // chart data
-        labels.push(item.device_id);
-        values.push(item.water_used);
-      });
-
-      // chart
-      new Chart(document.getElementById("chart"), {
-        type: "bar",
-        data: {
-          labels: labels,
-          datasets: [{
-            label: "Water Usage",
-            data: values
-          }]
-        }
-      });
-
-    });
-}
-</script>
+<!-- LINK TO JAVASCRIPT FILE -->
+<script src="script.js"></script>
 
 </body>
 </html>
