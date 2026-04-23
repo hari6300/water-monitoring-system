@@ -1,0 +1,6 @@
+[
+ {"device_id":"D1","water_used":15,"status":"Normal"},
+ {"device_id":"D1","water_used":25,"status":"Normal"},
+ {"device_id":"D1","water_used":60,"status":"High Usage"},
+ {"device_id":"D1","water_used":80,"status":"Possible Leakage"}
+]
