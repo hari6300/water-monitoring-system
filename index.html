@@ -1,19 +1,102 @@
 <!DOCTYPE html>
 <html>
+<head>
+<title>Water Monitoring System</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+}
+
+button {
+    padding: 10px;
+    margin: 15px;
+}
+
+table {
+    margin: auto;
+    border-collapse: collapse;
+    width: 70%;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+th {
+    background: #3498db;
+    color: white;
+}
+
+pre {
+    text-align: left;
+    width: 70%;
+    margin: auto;
+    background: #f4f4f4;
+    padding: 10px;
+}
+</style>
+</head>
+
 <body>
-<h1>Water Monitoring System</h1>
+
+<h1>💧 Water Monitoring System</h1>
+
 <button onclick="loadData()">Load Data</button>
-<pre id="output"></pre>
+
+<h3>JSON Output</h3>
+<pre id="jsonOutput"></pre>
+
+<h3>Table Output</h3>
+<table id="table">
+<tr>
+<th>ID</th>
+<th>Device ID</th>
+<th>Water Used</th>
+<th>Status</th>
+</tr>
+</table>
 
 <script>
 function loadData() {
- fetch("fetch.php")
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("output").innerText =
-      JSON.stringify(data, null, 2);
-  });
+
+ // ✅ STATIC DATA (WORKS ON GITHUB)
+ let data = [
+   {"device_id":"D1","water_used":15,"status":"Normal"},
+   {"device_id":"D1","water_used":25,"status":"Normal"},
+   {"device_id":"D1","water_used":60,"status":"High Usage"},
+   {"device_id":"D1","water_used":80,"status":"Possible Leakage"}
+ ];
+
+ // JSON display
+ document.getElementById("jsonOutput").textContent =
+   JSON.stringify(data, null, 2);
+
+ // Table display
+ let table = document.getElementById("table");
+
+ table.innerHTML = `
+ <tr>
+ <th>ID</th>
+ <th>Device ID</th>
+ <th>Water Used</th>
+ <th>Status</th>
+ </tr>`;
+
+ data.forEach((item, index) => {
+   table.innerHTML += `
+   <tr>
+     <td>${index + 1}</td>
+     <td>${item.device_id}</td>
+     <td>${item.water_used}</td>
+     <td>${item.status}</td>
+   </tr>`;
+ });
+
 }
 </script>
+
 </body>
 </html>
