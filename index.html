@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Water Monitoring Dashboard</title>
+  <title>Water Monitoring System</title>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -13,7 +13,7 @@
 
 <button onclick="loadData()">Load Data</button>
 
-<h2>Table View</h2>
+<h3>Table Data</h3>
 <table border="1" id="table">
   <tr>
     <th>Device ID</th>
@@ -22,53 +22,56 @@
   </tr>
 </table>
 
-<h2>Chart View</h2>
+<h3>Chart</h3>
 <canvas id="chart" width="400" height="200"></canvas>
 
 <script>
 function loadData() {
-fetch("data.json")
-  .then(res => res.json())
-  .then(data => {
+  fetch("data.json")
+    .then(res => res.json())
+    .then(data => {
 
-    let table = document.getElementById("table");
+      let table = document.getElementById("table");
 
-    let labels = [];
-    let values = [];
+      // clear old rows
+      table.innerHTML = `
+        <tr>
+          <th>Device ID</th>
+          <th>Water Used</th>
+          <th>Status</th>
+        </tr>
+      `;
 
-    // Clear old rows
-    table.innerHTML = `
-      <tr>
-        <th>Device ID</th>
-        <th>Water Used</th>
-        <th>Status</th>
-      </tr>`;
+      let labels = [];
+      let values = [];
 
-    data.forEach(item => {
+      data.forEach(item => {
+        // table
+        let row = `<tr>
+          <td>${item.device_id}</td>
+          <td>${item.water_used}</td>
+          <td>${item.status}</td>
+        </tr>`;
+        table.innerHTML += row;
 
-      let row = table.insertRow();
+        // chart data
+        labels.push(item.device_id);
+        values.push(item.water_used);
+      });
 
-      row.insertCell(0).innerText = item.device_id;
-      row.insertCell(1).innerText = item.water_used;
-      row.insertCell(2).innerText = item.status;
+      // chart
+      new Chart(document.getElementById("chart"), {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Water Usage",
+            data: values
+          }]
+        }
+      });
 
-      labels.push(item.device_id + "-" + item.water_used);
-      values.push(item.water_used);
     });
-
-    // Draw chart
-    new Chart(document.getElementById("chart"), {
-      type: "bar",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Water Usage",
-          data: values
-        }]
-      }
-    });
-
-  });
 }
 </script>
 
