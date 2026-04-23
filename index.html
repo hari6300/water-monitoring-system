@@ -1,100 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Water Monitoring System</title>
+  <title>Water Monitoring Dashboard</title>
 
-<style>
-body {
-    font-family: Arial;
-    text-align: center;
-}
-
-button {
-    padding: 10px;
-    margin: 15px;
-}
-
-table {
-    margin: auto;
-    border-collapse: collapse;
-    width: 70%;
-}
-
-th, td {
-    border: 1px solid #ccc;
-    padding: 10px;
-}
-
-th {
-    background: #3498db;
-    color: white;
-}
-
-pre {
-    text-align: left;
-    width: 70%;
-    margin: auto;
-    background: #f4f4f4;
-    padding: 10px;
-}
-</style>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-<h1>💧 Water Monitoring System</h1>
+<h1>Water Monitoring Dashboard</h1>
 
 <button onclick="loadData()">Load Data</button>
 
-<h3>JSON Output</h3>
-<pre id="jsonOutput"></pre>
-
-<h3>Table Output</h3>
-<table id="table">
-<tr>
-<th>ID</th>
-<th>Device ID</th>
-<th>Water Used</th>
-<th>Status</th>
-</tr>
+<h2>Table View</h2>
+<table border="1" id="table">
+  <tr>
+    <th>Device ID</th>
+    <th>Water Used</th>
+    <th>Status</th>
+  </tr>
 </table>
+
+<h2>Chart View</h2>
+<canvas id="chart" width="400" height="200"></canvas>
 
 <script>
 function loadData() {
+ fetch("fetch.php")
+  .then(res => res.json())
+  .then(data => {
 
- // ✅ STATIC DATA (WORKS ON GITHUB)
- let data = [
-   {"device_id":"D1","water_used":15,"status":"Normal"},
-   {"device_id":"D1","water_used":25,"status":"Normal"},
-   {"device_id":"D1","water_used":60,"status":"High Usage"},
-   {"device_id":"D1","water_used":80,"status":"Possible Leakage"}
- ];
+    let table = document.getElementById("table");
 
- // JSON display
- document.getElementById("jsonOutput").textContent =
-   JSON.stringify(data, null, 2);
+    let labels = [];
+    let values = [];
 
- // Table display
- let table = document.getElementById("table");
+    // Clear old rows
+    table.innerHTML = `
+      <tr>
+        <th>Device ID</th>
+        <th>Water Used</th>
+        <th>Status</th>
+      </tr>`;
 
- table.innerHTML = `
- <tr>
- <th>ID</th>
- <th>Device ID</th>
- <th>Water Used</th>
- <th>Status</th>
- </tr>`;
+    data.forEach(item => {
 
- data.forEach((item, index) => {
-   table.innerHTML += `
-   <tr>
-     <td>${index + 1}</td>
-     <td>${item.device_id}</td>
-     <td>${item.water_used}</td>
-     <td>${item.status}</td>
-   </tr>`;
- });
+      let row = table.insertRow();
 
+      row.insertCell(0).innerText = item.device_id;
+      row.insertCell(1).innerText = item.water_used;
+      row.insertCell(2).innerText = item.status;
+
+      labels.push(item.device_id + "-" + item.water_used);
+      values.push(item.water_used);
+    });
+
+    // Draw chart
+    new Chart(document.getElementById("chart"), {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Water Usage",
+          data: values
+        }]
+      }
+    });
+
+  });
 }
 </script>
 
